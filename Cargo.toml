@@ -1,0 +1,17 @@
+[package]
+name = "ulid-gen-mcp-rs"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+anyhow = "1.0.97"
+rmcp = { version = "0.1.5", features = [ "transport-io" ] }
+tokio = { version = "1.44.2", features = ["full"] }
+tracing = "0.1.41"
+tracing-appender = "0.2.3"
+tracing-subscriber = { version = "0.3.19", features = ["env-filter"] }
+ulid = "1.2.1"
+
+[[bin]]
+name = "ulid_gen_server"
+path = "src/main.rs"
