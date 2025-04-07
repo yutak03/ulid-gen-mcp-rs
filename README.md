@@ -12,7 +12,6 @@ Model Context Protocol (MCP)を利用したULID（Universally Unique Lexicograph
 ## 必要条件
 
 - Rust 1.75以上
-- Cargo
 
 ## インストール
 
