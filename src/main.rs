@@ -1,7 +1,13 @@
 use std::sync::{Arc, Mutex};
 
-use rmcp::{model::{CallToolResult, Content, Implementation, ProtocolVersion, ServerCapabilities, ServerInfo}, tool, ServerHandler, ServiceExt};
 use rmcp::transport::stdio;
+use rmcp::{
+    ServerHandler, ServiceExt,
+    model::{
+        CallToolResult, Content, Implementation, ProtocolVersion, ServerCapabilities, ServerInfo,
+    },
+    tool,
+};
 
 use tracing_subscriber::EnvFilter;
 
@@ -23,10 +29,9 @@ impl Ulid {
         let mut ulid = self.ulid.lock().unwrap();
         *ulid = ulid::Ulid::new();
         tracing::info!("Generated new ULID: {}", ulid);
-        Ok(CallToolResult::success(vec![
-            Content::text(ulid.to_string())
-            ])
-        )
+        Ok(CallToolResult::success(vec![Content::text(
+            ulid.to_string(),
+        )]))
     }
 }
 
@@ -42,27 +47,30 @@ impl ServerHandler for Ulid {
                 .build(),
             server_info: Implementation::from_build_env(),
             instructions: Some("This is a server for generating ULID".into()),
-
         }
     }
 }
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
-// Initialize the tracing subscriber with file and stdout logging
+    // Initialize the tracing subscriber with file and stdout logging
     tracing_subscriber::fmt()
-    .with_env_filter(EnvFilter::from_default_env().add_directive(tracing::Level::DEBUG.into()))
-    .with_writer(std::io::stderr)
-    .with_ansi(false)
-    .init();
+        .with_env_filter(EnvFilter::from_default_env().add_directive(tracing::Level::DEBUG.into()))
+        .with_writer(std::io::stderr)
+        .with_ansi(false)
+        .init();
 
     tracing::info!("Starting MCP server...");
-    
-    let service = Ulid::new().serve(stdio()).await.inspect_err(|e| {
-        tracing::error!("Error: {}", e);
-    }).unwrap_or_else(|_| {
-        std::process::exit(1);
-    });
+
+    let service = Ulid::new()
+        .serve(stdio())
+        .await
+        .inspect_err(|e| {
+            tracing::error!("Error: {}", e);
+        })
+        .unwrap_or_else(|_| {
+            std::process::exit(1);
+        });
 
     service.waiting().await?;
     Ok(())
