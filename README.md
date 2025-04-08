@@ -36,6 +36,7 @@ chmod +x ./target/release/ulid_gen_server
 
 ### 設定ファイルを記載する
 
+mcpの設定を記載し、書いた設定ファイルをClaude desktopの設定に追加する。
 
 ```json
 {
